@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.main-container {
+  @apply min-h-full w-full flex flex-col items-center justify-center gap-8 p-6;
+}
+.flex-col-flow {
+  @apply flex flex-col gap-4 w-full items-center space-y-4 justify-center;
+}
+.input-styles {
+  @apply flex border border-gray-300 p-4 rounded-lg w-1/4 text-center mx-auto outline-none hover:border-amber-700;
+}
+.button-styles {
+  @apply flex font-medium bg-amber-700 text-amber-100 w-1/4 items-center justify-center rounded-lg py-2;
+}
