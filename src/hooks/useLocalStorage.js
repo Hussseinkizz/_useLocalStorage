@@ -2,7 +2,12 @@ export const _useLocalStore = (storageType = 'local') => {
   // select appropriate storage type as user defined
   let storage = storageType === 'session' ? sessionStorage : localStorage;
 
-  // handle auto-resetting of storage
+  // define a key to uniquely identify react-x-hands storage stuff
+  let storageKey = 'default-key';
+  // let storageKey = Symbol();
+  // console.log(storageKey());
+
+  // handle auto reseting of storage
   const timeBomb = (key, cacheTime) => {
     if (typeof window) {
       setTimeout(() => {
@@ -12,52 +17,34 @@ export const _useLocalStore = (storageType = 'local') => {
     }
   };
 
-  const encryptData = async (data, secretKey) => {
-    const encodedData = new TextEncoder().encode(data);
-    const encodedKey = await crypto.subtle.digest(
-      'SHA-256',
-      new TextEncoder().encode(secretKey)
-    );
-    const encryptedData = await crypto.subtle.encrypt(
-      { name: 'AES-GCM', iv: encodedKey.slice(0, 12) },
-      encodedKey,
-      encodedData
-    );
-    return encryptedData;
+  // prepare the state to persist
+  let stateToPersist = [];
+
+  // updated whenever this function is called
+  let persistedState = {};
+
+  // if clear is passed first clear all existing state
+  const resetLocalStore = () => {
+    if (typeof window) {
+      storage.clear();
+    }
   };
 
-  const decryptData = async (encryptedData, secretKey) => {
-    const encodedKey = await crypto.subtle.digest(
-      'SHA-256',
-      new TextEncoder().encode(secretKey)
-    );
-    const decryptedData = await crypto.subtle.decrypt(
-      { name: 'AES-GCM', iv: encodedKey.slice(0, 12) },
-      encodedKey,
-      encryptedData
-    );
-    return new TextDecoder().decode(decryptedData);
-  };
-
-  const set = async (key, stateToPersist, secretKey) => {
+  // define some little utilities
+  let set = (key, stateToPersist) => {
     try {
-      const encryptedState = await encryptData(
-        JSON.stringify(stateToPersist),
-        secretKey
-      );
-      storage.setItem(key, JSON.stringify(encryptedState));
+      storage.setItem(key, JSON.stringify(stateToPersist));
     } catch (error) {
       throw new Error(`Error setting state ${key}: ${error}`);
     }
   };
-
-  const get = async (key, secretKey) => {
+  let get = (key) => {
     try {
-      const encryptedState = JSON.parse(storage.getItem(key));
-      if (encryptedState) {
-        const decryptedState = await decryptData(encryptedState, secretKey);
-        return JSON.parse(decryptedState);
+      let state = JSON.parse(storage.getItem(key));
+      if (state) {
+        return state;
       } else {
+        // console.error(`Local state ${key} not found!`);
         return null;
       }
     } catch (error) {
@@ -65,37 +52,45 @@ export const _useLocalStore = (storageType = 'local') => {
     }
   };
 
-  const setLocalStore = async (
+  const setLocalStore = (
     key,
     currentState,
-    { cacheTimeout = true, cacheTime = 60 * 1000, secretKey = '' }
+    { cacheTimeout = true, cacheTime = 60 * 1000 }
   ) => {
     if (typeof window) {
+      // we on client, do stuff
       try {
-        const stateKey = key || 'default-key';
+        stateToPersist = currentState;
+        let stateKey = key ?? storageKey;
 
+        // enable time bomb
+        // console.log('timeout:', stateKey, cacheTimeout, cacheTime);
         if (cacheTimeout === true) {
           timeBomb(stateKey, cacheTime);
         }
 
-        await set(stateKey, currentState, secretKey);
-        return await get(stateKey, secretKey); // Return decrypted state for usage
+        if (get(stateKey)) {
+          // check if state exists, if true update else create new state
+          let oldLocalState = get(stateKey);
+          let newLocalState = { ...oldLocalState, ...stateToPersist };
+          set(stateKey, newLocalState);
+          persistedState = get(stateKey);
+          return persistedState;
+        } else {
+          // create new
+          set(stateKey, stateToPersist);
+          persistedState = get(stateKey);
+          return persistedState;
+        }
       } catch (error) {
-        console.error(`Error persisting state: ${error}`);
+        console.error(`Error Persisting State: ${error}`);
       }
     } else {
       return;
     }
   };
 
-  const getLocalStore = async (storageKey, secretKey) =>
-    await get(storageKey, secretKey);
-
-  const resetLocalStore = () => {
-    if (typeof window) {
-      storage.clear();
-    }
-  };
+  const getLocalStore = (storageKey) => get(storageKey);
 
   return { getLocalStore, setLocalStore, resetLocalStore };
 };
