@@ -3,10 +3,11 @@ import { _useLocalStore } from './hooks/useLocalStorage.js';
 
 const App = () => {
   // get stuff from hook, hook name starts with underscore to avoid some react rules on how we can use it, after all it's plain js implementation why limit us with react hook rules, no useEffect this way!
-  const { getLocalStore, setLocalStore, resetLocalStore } = _useLocalStore();
+  const { getLocalStore, setLocalStore, resetLocalStore } =
+    _useLocalStore('session');
 
   // get local state and load it initially as initial form values
-  const userData = getLocalStore('$userData');
+  const userData = async () => getLocalStore('$userData');
 
   const [username, setUsername] = useState(userData?.username ?? '');
   const [password, setPassword] = useState(userData?.password ?? '');
@@ -21,16 +22,18 @@ const App = () => {
     resetLocalStore(); // reset local store clean for initial storing not need after wards and is optional either way!
 
     // cache data as whole, and make it cached forever by setting cacheTimeout  to false
-    const localStateAll = setLocalStore('$userData', userData, {
-      cacheTimeout: false,
-    });
+    const localStateAll = async () =>
+      setLocalStore('$userData', userData, {
+        cacheTimeout: false,
+      });
 
     if (localStateAll) {
       console.log('All User Data:', localStateAll);
     }
 
     // cache data per state basis, by default cache auto resets after sometime
-    const localStateUsername = setLocalStore('$username', username, {});
+    const localStateUsername = async () =>
+      setLocalStore('$username', username, {});
 
     if (localStateUsername) {
       console.log('Just Username:', localStateUsername);
@@ -41,8 +44,8 @@ const App = () => {
   };
 
   // again you can access that data anytime unless it was auto reset
-  const getData = () => {
-    const userData = getLocalStore('$userData');
+  const getData = async () => {
+    const userData = await getLocalStore('$userData');
     console.log("Any data can be retreived later via it's key", userData);
   };
 
