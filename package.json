@@ -1,0 +1,44 @@
+{
+  "name": "@kizz-js/use-local-storage",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "A Plain dependency free Js based but react hook like store for working with browser local storage in both vanilla js projects and react applications, with no react useEffect or page re-hydration needed!",
+  "main": "dist/useLocalStorage.umd.cjs",
+  "module": "useLocalStorage.js",
+  "types": "dist/useLocalStorage.d.ts",
+  "files": [
+    "dist"
+  ],
+  "directories": {
+    "doc": "docs",
+    "example": "example"
+  },
+  "scripts": {
+    "build": "vite build",
+    "docs": "jsdoc -d ./docs useLocalStorage.js"
+  },
+  "devDependencies": {
+    "jsdoc": "^4.0.2",
+    "terser": "^5.26.0",
+    "vite": "^5.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Hussseinkizz/_useLocalStorage.git"
+  },
+  "keywords": [
+    "local",
+    "storage",
+    "react",
+    "kizz",
+    "useLocalStorage",
+    "storage",
+    "js"
+  ],
+  "author": "Hussein Kizz",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Hussseinkizz/_useLocalStorage/issues"
+  },
+  "homepage": "https://github.com/Hussseinkizz/_useLocalStorage#readme"
+}
