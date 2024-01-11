@@ -14,7 +14,25 @@ A Plain dependency free Js based utility or react hook like store, for working w
 - All data stored in broswer storage is encrypted by default unless disabled by setting encrpt to false.
 - Has no dependencies and supports both react and vanilla js projects
 
-## 😇 How It Works With An Example:
+## ▶️ Installation
+
+``` bash
+
+npm i @kizz-js/use-local-storage
+
+```
+
+For vanilla js projects a [cdn](https://cdn.jsdelivr.net/npm/@kizz-js/use-local-storage@1.0.0/dist/useLocalStorage.js) is recommended, otherwise you have to refrence the file exactly after installation for example:
+
+```js
+
+import { _useStorage } from './node_modules/@kizz-js/use-local-storage/dist/useLocalStorage.js';
+
+```
+
+while for others it's the usual stuff, just import from `@kizz-js/use-local-storage` and the rest will be just fine!
+
+## 😇 Now, How It Works With An Example:
 
 Import and instantiate the local storage utility as storage with optional options. Which can be storageType or encryption while storageType can be `local` or `session` and encryption can be `true` or `false` and for both local and true are enabled by default respectively.
 
