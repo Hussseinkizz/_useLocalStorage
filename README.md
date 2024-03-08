@@ -21,7 +21,7 @@ npm i @kizz-js/use-local-storage
 
 ```
 
-For vanilla js projects a [cdn](https://cdn.jsdelivr.net/npm/@kizz-js/use-local-storage@1.0.2/dist/useLocalStorage.js) is recommended, otherwise you have to refrence the file exactly after installation for example:
+For vanilla js projects a [cdn](https://cdn.jsdelivr.net/npm/@kizz-js/use-local-storage@1.0.3/dist/useLocalStorage.js) is recommended, otherwise you have to refrence the file exactly after installation for example:
 
 ```js
 
