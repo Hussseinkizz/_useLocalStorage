@@ -11,7 +11,6 @@ A Plain dependency free Js based utility or react hook like store, for working w
 - Each state in local storage is uniquely separated, making it easy to work with!
 - Has methods to get, set and reset locally persisted state!
 - Has onChange method to listen and react to local state changes useful for synchronizing state in multiple tabs simultaneously!
-- All data stored in broswer storage is encrypted by default unless disabled by setting encrpt to false.
 - Has no dependencies and supports both react and vanilla js projects
 
 ## ▶️ Installation
@@ -22,7 +21,7 @@ npm i @kizz-js/use-local-storage
 
 ```
 
-For vanilla js projects a [cdn](https://cdn.jsdelivr.net/npm/@kizz-js/use-local-storage@1.0.1/dist/useLocalStorage.js) is recommended, otherwise you have to refrence the file exactly after installation for example:
+For vanilla js projects a [cdn](https://cdn.jsdelivr.net/npm/@kizz-js/use-local-storage@1.0.2/dist/useLocalStorage.js) is recommended, otherwise you have to refrence the file exactly after installation for example:
 
 ```js
 
@@ -34,7 +33,7 @@ while for others it's the usual stuff, just import from `@kizz-js/use-local-stor
 
 ## 😇 Now, How It Works With An Example:
 
-Import and instantiate the local storage utility as storage with optional options. Which can be storageType or encryption while storageType can be `local` or `session` and encryption can be `true` or `false` and for both local and true are enabled by default respectively.
+Import and instantiate the local storage utility as storage with optional options. Which can be storageType of storageType `local` or `session` but local storage by default. see [MDN Docs](https://developer.mozilla.org/en-US/docs/Web/API/Storage) docs for differences between session and local storage options.
 
 For Example:
 
@@ -42,21 +41,19 @@ For Example:
 
 import { _useStorage } from '@kizz-js/use-local-storage';
 
-// Use Local Storage & Enable encryption (both enabled by default)
+// Use Local Storage & use local storage (used by default)
 const storage = _useStorage();
 
-// use session storage istead and maybe also disable encryption
-const storage = _useStorage({storageType: "session", encrypt: false});
+// use session storage istead
+const storage = _useStorage({storageType: "session"});
 
-// Disable encryption only
-// const storage = _useStorage({ encrypt: false });
 ```
 
 ### Set Data in Storage
 
 ``` javascript
 
-const key = 'super-secret';
+const key = 'my-state';
 const dataToStore = { username: 'kizz', id: 123 };
 
 // Set data with caching options
@@ -74,7 +71,7 @@ storage.setState(key, dataToStore, {
 
 ``` javascript
 
-const retrievedData = storage.getState('super-secret');
+const retrievedData = storage.getState('my-state');
 console.log('Retrieved data:', retrievedData);
 
 ```
@@ -91,7 +88,7 @@ storage.resetStorage();
 
 ### Listen To Storage Change Events
 
-You can listen to storage change events using the onChange method and run any side effects or callbacks you would want to run whenever local state changes, say redirect a user to login when they logout etc.
+You can listen to storage change events using the onChange method and run any side effects or callbacks you would want to run whenever local state changes, say redirect a user to login when they logout etc. This is experimental and stil being tested, so use with caution!
 
 ``` javascript
 
@@ -116,7 +113,7 @@ const form = document.querySelector('#loginForm');
 const userNameInput = form.querySelector('#userNameInput');
 const passwordInput = form.querySelector('#passwordInput');
 
-const storage = _useStorage({ encrypt: true });
+const storage = _useStorage();
 
 let stateKey = 'userLoginData';
 
@@ -155,15 +152,13 @@ storage.onChange(() => {
 ```
 
 That's it, some few things to note though, just a few...
+Starting with never store senstive data in local storage, have an extra layer of security for your applications, we not gonna do that for you in any way!
 
 ## ✍️ Quick Notes For Nerds:
 
 - For use in SSR or server component react, hacks like `use client`, `typeof window` and `useEffect` still have to be used, otherwise it works well in just client side react apps or plain js apps!
-- You could use `.env` variable secrets to store your stateKey which can be used to encrypt and decrpt data when storing and retrieving it from local store to increase security, just dont expose your .env file by adding it to a .gitignore right away then!
 - useLocalStorage storage unlike the normal broswer `localStorage` doesnot overwrite state unnecessarily, that is if the state already exists with the same state key, it just updates it instead, otherwise sets it to the new value.
 - The underscore on hook name `_useStorage` was intentional to prevent hook rules in if say this is used in a react applications, and because we don't obey those rules, this hook does not need to be used in a useEffect to work unlike the normal local storage, this just works, in react or vanilla.
-- The encryption used to secure the data as it is stored in broswer is basic and your advised to use more secure means if you deal with really really sensitive data, it shouldn't be in local storage even in first place or so, consider a cloud database maybe, none the less, each state key is used to encrypt and decrypt the data, so if you loose it, that data might be unrecoverable but if everything is used as indicated, this process is all automatically handled by the lib itself you don't have to lift a finger!
-
 
 ## 🛠️ Development And Contribution
 
